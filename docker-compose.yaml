@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  tarantool:
+    build:
+      context: .
+      dockerfile: docker/tarantool/Dockerfile
+    ports:
+      - "3301:3301"
+    volumes:
+      - tarantool_data:/var/lib/tarantool
+    restart: unless-stopped
+    networks:
+      - bot-network
+    environment:
+      - TARANTOOL_LOG_LEVEL=6
+
+  bot:
+    build:
+      context: .
+      dockerfile: docker/bot/Dockerfile
+    depends_on:
+      - tarantool
+    restart: unless-stopped
+    environment:
+      - MATTERMOST_SERVERURL=http://host.docker.internal:8065
+      - MATTERMOST_TOKEN=${MATTERMOST_TOKEN}
+      - MATTERMOST_TEAMNAME=${MATTERMOST_TEAMNAME}
+      - MATTERMOST_BOTUSERID=${MATTERMOST_BOTUSERID}
+      - TARANTOOL_HOST=tarantool
+      - TARANTOOL_PORT=3301
+      - TARANTOOL_USER=admin
+      - TARANTOOL_PASSWORD=password
+      - BOT_LOGLEVEL=info
+    networks:
+      - bot-network
+
+networks:
+  bot-network:
+    driver: bridge
+
+
+volumes:
+  tarantool_data:

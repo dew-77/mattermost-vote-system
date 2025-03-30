@@ -1,0 +1,9 @@
+FROM tarantool/tarantool:2.10
+
+RUN echo 'box.cfg{listen=3301, force_recovery=true}' > /opt/tarantool/debug.lua
+RUN echo 'print("Connected with force_recovery")' >> /opt/tarantool/debug.lua
+RUN echo 'print("Checking _priv space:")' >> /opt/tarantool/debug.lua
+RUN echo 'pcall(function() for _, t in box.space._priv:pairs() do print(t) end end)' >> /opt/tarantool/debug.lua
+RUN echo 'os.execute("sleep infinity")' >> /opt/tarantool/debug.lua
+
+CMD ["tarantool", "/opt/tarantool/debug.lua"]

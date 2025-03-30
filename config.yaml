@@ -1,0 +1,15 @@
+mattermost:
+  serverURL: "http://host.docker.internal:8065"
+  token: ""
+  teamName: ""
+  botUserID: ""
+
+tarantool:
+  host: "tarantool"
+  port: 3301
+  user: "admin"
+  password: "password"
+  space: "polls"
+
+bot:
+  logLevel: "debug"
